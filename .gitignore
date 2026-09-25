@@ -4,8 +4,9 @@
 **/._*
 
 #logs
-*.log
-**/logs/*.log*
+# logs de ejecucion 
+logs/
+logs/*.log
 
 # excel files
 *.xls

@@ -14,17 +14,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 public class Fecha {
     private static String fechaActual;
     private static String formatoFecha;
-    private static String formatoHora;
     private static Date fecha;
     private static SimpleDateFormat formato;
-    private static String fechaCorta;
-    private static String formatoFechaCorta;
-    private static SimpleDateFormat sdfechaCorta;
     private static DateFormat dfFecha;
     
     /** **/
@@ -162,23 +157,6 @@ public class Fecha {
         }
     }
     
-    private static void setShortDate(Date date){
-        try{
-            if (formatoFechaCorta == null || formatoFechaCorta.equals("") || formatoFechaCorta.equals("null"))
-                formatoFechaCorta = "dd/MM/yyyy";
-
-            sdfechaCorta = new SimpleDateFormat (formatoFechaCorta,new Locale("es","EC")); 
-            sdfechaCorta.applyPattern(formatoFechaCorta); 
-            fechaCorta = sdfechaCorta.format(date);
-        }catch(IllegalArgumentException iae){
-            ;
-        }
-    }
-    
-    private static String getShortDate(){
-    	return fechaCorta;
-    }
-     
     /** Obtiene la fecha en el formato de fecha corta dd/MM/yyyy
      * @return  **/
     public static String obtenFechaCorta() {
@@ -267,16 +245,11 @@ public class Fecha {
     }
     
     public static void main(String arg[]){
-        //Fecha f = new Fecha();
-        Date f2 = null; 
-               
         Fecha.estableceFormato("yyyy-MM-dd");
         String fecha2 = Fecha.obtenFechaActualFormato();
         System.out.println("Hoy: " + fecha2);
         System.out.println("Hoy 1: " + Fecha.sumarRestarDias(fecha2, 1));
         System.out.println("Hoy -1: " + Fecha.sumarRestarDias(fecha2, -1));
-        Date f1 = fecha;
-
         System.out.println("fecha1: " + fecha);
         
         Fecha.estableceFormato("dd-MMMM-yyyy HH:mm:ss");
@@ -333,15 +306,7 @@ public class Fecha {
         System.out.println(hoy.getTime());
         
         System.out.println("Available TimeZone ");
-        String [] timeZones = TimeZone.getAvailableIDs();
-        //for (String tz : timeZones)
-        //    System.out.println(tz);
-
         System.out.println("Available Locale " /* + Arrays.toString(Locale.getAvailableLocales())*/);
-        Locale [] locales = Locale.getAvailableLocales();
-        //for (Locale ls: locales)
-        //    System.out.println(ls.toString());
-        
         Calendar calHoy = Calendar.getInstance(new Locale("es","EC"));
         System.out.println(calHoy.getTime());
         calHoy.set(2019,03,06,12,34,18);

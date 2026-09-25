@@ -16,13 +16,11 @@ import java.util.Hashtable;
 
 public class RepositorioConexion extends Conexion {
 
-    @SuppressWarnings("unchecked")
-    private final Hashtable conexiones;
+    private final Hashtable<String, Connection> conexiones;
 
-    @SuppressWarnings("unchecked")
     public RepositorioConexion() throws Exception{ 
         super();
-        conexiones = new Hashtable();
+        conexiones = new Hashtable<>();
     }
 
     public boolean existeConexion(String p_idConexion){ 
@@ -33,12 +31,10 @@ public class RepositorioConexion extends Conexion {
         return (Connection)conexiones.get(p_idConexion);
     }
 
-    @SuppressWarnings("unchecked")
     public void insertarConexion(String p_idConexion, Connection p_conn){
         conexiones.put(p_idConexion, p_conn);
     }
 
-    @SuppressWarnings("unchecked")
     public void insertarConexion(){
         long p_idConexion = getSID();
         conexiones.put(String.valueOf(p_idConexion), m_conn);
@@ -49,9 +45,8 @@ public class RepositorioConexion extends Conexion {
         conn.close();
     }
 
-    @SuppressWarnings("unchecked")
     public void eliminarConexiones() throws SQLException{ 
-        Enumeration enumConexiones=conexiones.elements();
+        Enumeration<Connection> enumConexiones=conexiones.elements();
         while(enumConexiones.hasMoreElements()){ 
             Connection conn=(Connection)enumConexiones.nextElement();
             conn.close();
@@ -86,8 +81,7 @@ public class RepositorioConexion extends Conexion {
     }
 
     //metodos para administracion del sistema
-    @SuppressWarnings("unchecked")
-    public Hashtable getConexiones(){
+    public Hashtable<String, Connection> getConexiones(){
         return conexiones;
     }
 
@@ -96,7 +90,6 @@ public class RepositorioConexion extends Conexion {
         try {
             eliminarConexiones();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         super.close();

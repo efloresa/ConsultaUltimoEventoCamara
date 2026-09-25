@@ -1,42 +1,39 @@
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template archivoEx, choose Tools | Templates
- * and open the template in the editor.
- */
-package atm.gob.ec.consultaeventos;
-
 /**
- * 
+ *
  * @author erik.flores
- * 
- * 
  */
+
+package atm.gob.ec.consultaeventos;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import atm.gob.ec.encriptacion.Encriptador;
 import atm.gob.ec.entidad.ConsultaEventosMessages;
 import atm.gob.ec.mail.SendMail;
+import atm.gob.ec.security.AesCryptoService;
+import atm.gob.ec.security.CryptoService;
+import atm.gob.ec.service.TelegramService;
 import atm.gob.ec.utils.Utils;
+
 import java.io.File;
 import java.io.FileOutputStream;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import java.time.Duration;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import java.util.Properties;
 
 public class ConsultaUltimoEventoCamara {
@@ -63,9 +60,10 @@ public class ConsultaUltimoEventoCamara {
     String strPattern = "";
     
     String strCodError = "";
+
+    private static String secret = System.getProperty("atm.crypto.key");
     
     public ConsultaUltimoEventoCamara() throws Exception {
-        // TODO Auto-generated constructor stub
         super();
         
         /** 
@@ -97,13 +95,9 @@ public class ConsultaUltimoEventoCamara {
         PreparedStatement preparedStatement = null;
         ResultSet result2 = null;
         
-        String us = propertie.getProperty("DB.MYSQLUSER");
-        String pw = propertie.getProperty("DB.MYSQLPASSWD");
-        String driver = propertie.getProperty("DB.MYSQLDRIVER");
-        
-        String url = propertie.getProperty("DB.MYSQLURL") ;
-        
-        String mensaje = propertie.getProperty("MAIL.BODY");
+        String us = propertie.getProperty("DB.USER");
+        String pw = propertie.getProperty("DB.PASSWD");
+        String url = propertie.getProperty("DB.URL") ;
         
         String strSentencia = propertie.getProperty("SQL.Q1");
 
@@ -126,9 +120,11 @@ public class ConsultaUltimoEventoCamara {
         
         strTTranscurrido = strTTranscurrido + "Fecha Consulta: " + dateFormat.format(date) + "%0A" ; // + " - Camaras sin transmitir%0A ";
         
+        CryptoService crypto = new AesCryptoService(secret); 
+        
         try {
             
-            connection = DriverManager.getConnection(url, us, Encriptador.decriptar(pw));
+            connection = DriverManager.getConnection(url, us, crypto.decrypt(pw));
             
             preparedStatement = connection.prepareStatement(strSentencia);
             preparedStatement.setString(1, strIntervaloD);
@@ -237,10 +233,7 @@ public class ConsultaUltimoEventoCamara {
         }
         
         if (propertie.getProperty("TELEGRAM.NOTIFICACION").toUpperCase().equals("Y") && !strCodError.equals("")){
-            strTelegramUrl = propertie.getProperty("TELEGRAM.URL");
-            strapiToken = propertie.getProperty("TELEGRAM.BOTAPITOKEN");
-            strChatId = propertie.getProperty("TELEGRAM.CHATID");
-            SendTMessage.sendToTelegram(strTelegramUrl,strapiToken,strChatId, strTTranscurrido);
+            new TelegramService(propertie).sendMessage(strTTranscurrido);
             logger2.info("Notificacion por Telegram");
         }
         
@@ -256,6 +249,9 @@ public class ConsultaUltimoEventoCamara {
         
         String asunto =  propertie.getProperty("MAIL.SUBJECT") + " del " + dateFormat.format(date);
         String email;
+
+        CryptoService crypto = new AesCryptoService(secret);
+
         try{
             if (!ps_param.equals("")) 
                 mensaje = ps_param;
@@ -271,7 +267,7 @@ public class ConsultaUltimoEventoCamara {
                 email = SendMail.sendWithAttachments(
                         propertie.getProperty("MAIL.SERVER"),
                         propertie.getProperty("MAIL.FROM"),
-                        Encriptador.decriptar(propertie.getProperty("MAIL.PASS")),
+                        crypto.decrypt(propertie.getProperty("MAIL.PASS")),
                         propertie.getProperty("MAIL.PORT"),
                         propertie.getProperty("MAIL.TO"),
                         propertie.getProperty("MAIL.CC"),
@@ -288,7 +284,7 @@ public class ConsultaUltimoEventoCamara {
                         propertie.getProperty("MAIL.BCC"),
                         asunto,
                         mensaje,
-                        Encriptador.decriptar(propertie.getProperty("MAIL.PASS")),
+                        crypto.decrypt(propertie.getProperty("MAIL.PASS")),
                         propertie.getProperty("MAIL.PORT")
                         );
             }            
@@ -310,7 +306,6 @@ public class ConsultaUltimoEventoCamara {
      * @throws java.lang.Exception
      */
     public static void main(String[] args) throws Exception {
-        // TODO code application logic here
         
         ConsultaUltimoEventoCamara evento = new ConsultaUltimoEventoCamara();
         

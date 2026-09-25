@@ -14,7 +14,6 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import javax.activation.DataHandler; 
 import javax.activation.FileDataSource;
 import javax.mail.Authenticator;
@@ -53,9 +52,6 @@ public class SendMail {
         SendMail.GS_TO = ps_to;
         ls_error = ""; 
         
-        StringTokenizer lst_cadenaMail;
-        lst_cadenaMail = new StringTokenizer(ps_to,";");
-         
         ls_error = send4(ps_smtp,ps_from,ps_to,ps_cc,ps_bcc,ps_subject,ps_texto,ps_password,ps_puerto);
         
         return ls_error;
@@ -76,10 +72,8 @@ public class SendMail {
                                String ps_password,
                                String ps_puerto) {
 
-        String  ls_mailer = "Axis 4.00.00";
         String  ls_error="";
-        boolean lb_debug = false;
-        int     li_optind, li_paso=0;
+        int     li_paso=0;
         SendMail.GS_CLAVE = ps_password;
         SendMail.GS_FROM = ps_from;
        
@@ -188,10 +182,8 @@ public class SendMail {
 
         Session session;
         Transport trp;
-        String  ls_mailer = "ATM 4.0.0";
         String  ls_error="";
-        boolean lb_debug = false;
-        int     li_optind, li_paso=0;
+        int     li_paso=0;
         GS_FROM = ps_from;
         GS_CLAVE = ps_password;
 
@@ -302,10 +294,8 @@ public class SendMail {
 
         Session session;
         Transport trp;
-        String  ls_mailer = "ATM 4.0.0";
         String  ls_error="";
-        boolean lb_debug = false;
-        int     li_optind, li_paso=0;
+        int     li_paso=0;
         GS_FROM = ps_from;
         GS_CLAVE = ps_password;
 
@@ -430,10 +420,8 @@ public class SendMail {
                                            Blob p_archivo1,
                                            String ps_nombreArchivo1) {
 
-        String  ls_mailer = "ATM 1.0.0";
         String  ls_error="";
-        boolean lb_debug = false;
-        int     li_optind, li_paso=0;
+        int     li_paso=0;
         SendMail.GS_CLAVE = ps_password;
         SendMail.GS_FROM = ps_from;
         SendMail.GS_TO = ps_to;

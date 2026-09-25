@@ -62,7 +62,6 @@ class Conexion {
 
         props = Utils.getProperties();
 
-        // TODO Auto-generated constructor stub
         setUser(param1);
         setPasswd(param2);
 
@@ -87,23 +86,10 @@ class Conexion {
         setPasswd(params[4]);
     }
     
-    private void setConexion(String driver, String url, String usuario, String clave )throws Exception{
-    	if (m_conn == null){
-            //DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-            Class.forName(driver);
-            m_conn = DriverManager.getConnection(url, usuario, clave);
-    	}
-        m_conn.setAutoCommit(false);		
-    }
-    
     private void setConexion(String url, String usuario, String clave )throws SQLException{
     	if (m_conn == null){
             if (getDriver().toLowerCase().matches("(.*)mysql(.*)")) 
                 DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-            if (getDriver().toLowerCase().matches("(.*)oracle(.*)")) 
-                DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
-            if (getDriver().toLowerCase().matches("(.*)sqlserver(.*)")) 
-                DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
             m_conn = DriverManager.getConnection(url, usuario, clave);
     	}
         m_conn.setAutoCommit(false);
@@ -113,10 +99,6 @@ class Conexion {
     	if (c == null){
             if (driver.toLowerCase().matches("(.*)mysql(.*)")) 
                 DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-            if (driver.toLowerCase().matches("(.*)oracle(.*)")) 
-                DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
-            if (driver.toLowerCase().matches("(.*)sqlserver(.*)")) 
-                DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
             c = DriverManager.getConnection(url, usuario, clave);
     	}
         c.setAutoCommit(false);
@@ -374,16 +356,6 @@ class Conexion {
                     closeResultSet();
             }
             return SID;
-    }
-
-    private void setPuerto(String port) {
-        //To change body of generated methods, choose Tools | Templates.
-        this.DB_PORT = port;
-    }
-
-    private void setServidor(String ipserver) {
-        //To change body of generated methods, choose Tools | Templates.
-        this.DB_SERVER = ipserver;
     }
 
     private String getServidor() {
