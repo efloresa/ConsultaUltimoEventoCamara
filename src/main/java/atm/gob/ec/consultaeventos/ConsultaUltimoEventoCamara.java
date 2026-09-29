@@ -249,9 +249,7 @@ public class ConsultaUltimoEventoCamara {
         
         String asunto =  propertie.getProperty("MAIL.SUBJECT") + " del " + dateFormat.format(date);
         String email;
-
-        CryptoService crypto = new AesCryptoService(secret);
-
+        
         try{
             if (!ps_param.equals("")) 
                 mensaje = ps_param;
@@ -261,34 +259,17 @@ public class ConsultaUltimoEventoCamara {
             mensaje = mensaje + "<br>"; 
             mensaje = mensaje + "<br>Este es un mensaje informativo por lo que le solicitamos no responder. "; 
             mensaje = mensaje + "<br>Atentamente, "; 
-            mensaje = mensaje + "<br>";             
+            mensaje = mensaje + "<br>";  
             
-            if (!ps_nombreArchivo.equals("")){
-                email = SendMail.sendWithAttachments(
-                        propertie.getProperty("MAIL.SERVER"),
-                        propertie.getProperty("MAIL.FROM"),
-                        crypto.decrypt(propertie.getProperty("MAIL.PASS")),
-                        propertie.getProperty("MAIL.PORT"),
-                        propertie.getProperty("MAIL.TO"),
-                        propertie.getProperty("MAIL.CC"),
-                        propertie.getProperty("MAIL.BCC"),
-                        asunto,
-                        mensaje,
-                        ps_nombreArchivo);
-            }else{
-                email = SendMail.send4(
-                        propertie.getProperty("MAIL.SERVER"),
-                        propertie.getProperty("MAIL.FROM"),
-                        propertie.getProperty("MAIL.TO"),
-                        propertie.getProperty("MAIL.CC"),
-                        propertie.getProperty("MAIL.BCC"),
-                        asunto,
-                        mensaje,
-                        crypto.decrypt(propertie.getProperty("MAIL.PASS")),
-                        propertie.getProperty("MAIL.PORT")
-                        );
-            }            
-            
+            email = SendMail.send(
+                    propertie.getProperty("MAIL.TO"),
+                    propertie.getProperty("MAIL.CC"),
+                    propertie.getProperty("MAIL.BCC"),
+                    asunto,
+                    mensaje,
+                    ps_nombreArchivo);
+                    
+        
             logger2.info("Notificacion por email");
             
             if (!email.equals(""))
